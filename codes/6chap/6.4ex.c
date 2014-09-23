@@ -28,7 +28,7 @@ int getword(char *, int);
 struct key *binsearch(char *, struct key *, int);
 /* count C keywords */
 main()
-{printf("%d %d",sizeof(struct key),sizeof keytab);
+{
 char word[MAXWORD];
 struct key *p;
 while (getword(word, MAXWORD) != 0)

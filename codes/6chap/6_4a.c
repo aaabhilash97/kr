@@ -3,12 +3,13 @@
 #include <string.h>
 #include<stdlib.h>
 #define MAXWORD 100
+int num;
 struct tnode {
 	char *word;
 	int count;
 	struct tnode *left;
 	struct tnode *right;
-};
+}keytab[5000];
 struct tnode *addtree(struct tnode *, char *);
 void treeprint(struct tnode *);
 int getword(char *, int);
@@ -22,12 +23,11 @@ char *strdup1(char *s)
 }
 main()
 {
-	struct tnode *root;
+	struct tnode *root=keytab;
 	char word[MAXWORD];
-	root = NULL;
 	while (getword(word, MAXWORD) != 0)
 		if (isalpha(word[0]))
-			root = addtree(root, word);
+			root=addtree(root, word);
 	treeprint(root);
 	return 0;
 }
@@ -39,29 +39,19 @@ struct tnode *talloc(void);
 /* addtree: add a node with w, at or below p */
 struct tnode *addtree(struct tnode *p, char *w)
 {
-	int cond;
-	if (p == NULL) {
-		p = talloc();
-		p->word = strdup1(w);
-		p->count = 1;
-		p->left = p->right = NULL;
-	} 	
-	else if ((cond = strcmp(w, p->word)) == 0)
-		{
-			p->count++;
-		}
-	else if (cond < 0)
-		p->left = addtree(p->left, w);
-	else
-		p->right = addtree(p->right, w);
-		return p;
+//	printf("%s\n",w);
+	p[num].word=malloc(strlen(w)+1);
+	strcpy(p[num].word,w);
+//	printf("%s",p[num].word);
+	num++;
+	return p;
 }
 void treeprint(struct tnode *p)
 {
-	if (p != NULL) {
-		treeprint(p->left);
-			printf("%4d %s\n", p->count, p->word);
-		treeprint(p->right);
+	int n=0;printf("%d",num);
+	while(n<num){
+		printf("\n%s",p[n].word);
+		n++;
 	}
 }
 

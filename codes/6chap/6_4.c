@@ -10,8 +10,10 @@ struct tnode {
 	struct tnode *right;
 };
 struct tnode *addtree(struct tnode *, char *);
+struct tnode *root1=NULL;
 void treeprint(struct tnode *);
 int getword(char *, int);
+char *save[10];
 char *strdup1(char *s)
 {
         char *p;
@@ -20,15 +22,44 @@ char *strdup1(char *s)
                 strcpy(p, s);
         return p;
 }
+struct tnode *talloc(void);
+struct tnode *newaddtree(struct tnode *p, struct tnode *w)
+{
+        int cond;
+        if (p == NULL) {
+                p = talloc();
+                p->word = strdup1(w->word);
+                p->count = w->count;
+                p->right =p->left= NULL;
+        }
+        else if (p->count==w->count)
+                {
+                        p->left=newaddtree(p->left,w);
+                }
+        else if (w->count<p->count)
+                p->left = newaddtree(p->left, w);
+        else 
+                p->right = newaddtree(p->right, w);
+                return p;
+}
+void treeprint1(struct tnode *p)
+{
+	if(p!=NULL){
+		root1=newaddtree(root1,p);
+		treeprint1(p->right);
+	}
+}
 main()
 {
 	struct tnode *root;
 	char word[MAXWORD];
+	int count=1;
 	root = NULL;
-	while (getword(word, MAXWORD) != 0)
+	while (getword(word, MAXWORD) != EOF)
 		if (isalpha(word[0]))
 			root = addtree(root, word);
-	treeprint(root);
+	treeprint1(root);
+	treeprint(root1);
 	return 0;
 }
 struct tnode *talloc(void)
@@ -44,14 +75,14 @@ struct tnode *addtree(struct tnode *p, char *w)
 		p = talloc();
 		p->word = strdup1(w);
 		p->count = 1;
-		p->left = p->right = NULL;
+		p->right = NULL;
 	} 	
 	else if ((cond = strcmp(w, p->word)) == 0)
 		{
 			p->count++;
 		}
 	else if (cond < 0)
-		p->left = addtree(p->left, w);
+		p->right = addtree(p->right, w);
 	else
 		p->right = addtree(p->right, w);
 		return p;
@@ -60,7 +91,7 @@ void treeprint(struct tnode *p)
 {
 	if (p != NULL) {
 		treeprint(p->left);
-			printf("%4d %s\n", p->count, p->word);
+		printf("%4d %s\n", p->count, p->word);
 		treeprint(p->right);
 	}
 }
@@ -72,9 +103,9 @@ int getword(char *word, int lim)
 	char *w = word;
 
 	while (isspace(c = getch())){
-		if (c=='\n'){
-			return 0;
-		}
+		/*if (c=='\n'){
+			return 0*/;
+	//	}
 	;}
 	if(c==EOF)
 		return EOF;
